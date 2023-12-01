@@ -77,6 +77,9 @@ AArch64RegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
   if (MF->getFunction().getCallingConv() == CallingConv::AnyReg)
     return CSR_AArch64_AllRegs_SaveList;
 
+  if (MF->getFunction().getCallingConv() == CallingConv::PreserveNone)
+    return CSR_AArch64_NoRegs_SaveList;
+
   // Darwin has its own CSR_AArch64_AAPCS_SaveList, which means most CSR save
   // lists depending on that will need to have their Darwin variant as well.
   if (MF->getSubtarget<AArch64Subtarget>().isTargetDarwin())
@@ -209,7 +212,7 @@ const uint32_t *
 AArch64RegisterInfo::getCallPreservedMask(const MachineFunction &MF,
                                           CallingConv::ID CC) const {
   bool SCS = MF.getFunction().hasFnAttribute(Attribute::ShadowCallStack);
-  if (CC == CallingConv::GHC)
+  if (CC == CallingConv::GHC || CC == CallingConv::PreserveNone)
     // This is academic because all GHC calls are (supposed to be) tail calls
     return SCS ? CSR_AArch64_NoRegs_SCS_RegMask : CSR_AArch64_NoRegs_RegMask;
   if (CC == CallingConv::AnyReg)

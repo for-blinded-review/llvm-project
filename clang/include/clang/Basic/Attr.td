@@ -2657,6 +2657,11 @@ def PreserveAll : DeclOrTypeAttr {
   let Documentation = [PreserveAllDocs];
 }
 
+def PreserveNone : DeclOrTypeAttr {
+  let Spellings = [Clang<"preserve_none">];
+  let Documentation = [PreserveAllDocs];
+}
+
 def Target : InheritableAttr {
   let Spellings = [GCC<"target">];
   let Args = [StringArgument<"featuresStr">];

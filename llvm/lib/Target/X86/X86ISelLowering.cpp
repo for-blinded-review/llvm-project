@@ -3592,6 +3592,7 @@ static bool canGuaranteeTCO(CallingConv::ID CC) {
   return (CC == CallingConv::Fast || CC == CallingConv::GHC ||
           CC == CallingConv::X86_RegCall || CC == CallingConv::HiPE ||
           CC == CallingConv::HHVM || CC == CallingConv::Tail ||
+	  CC == CallingConv::PreserveNone ||
           CC == CallingConv::SwiftTail);
 }
 

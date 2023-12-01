@@ -1010,6 +1010,9 @@ void TypePrinter::printFunctionAfter(const FunctionType::ExtInfo &Info,
     case CC_PreserveAll:
       OS << " __attribute__((preserve_all))";
       break;
+    case CC_PreserveNone:
+      OS << " __attribute__((preserve_none))";
+      break;
     }
   }
 
@@ -1793,6 +1796,9 @@ void TypePrinter::printAttributedAfter(const AttributedType *T,
 
   case attr::PreserveAll:
     OS << "preserve_all";
+    break;
+  case attr::PreserveNone:
+    OS << "preserve_none";
     break;
   case attr::NoDeref:
     OS << "noderef";
