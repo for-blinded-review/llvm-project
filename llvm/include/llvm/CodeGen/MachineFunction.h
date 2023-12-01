@@ -372,6 +372,7 @@ class LLVM_EXTERNAL_VISIBILITY MachineFunction {
   bool HasEHCatchret = false;
   bool HasEHScopes = false;
   bool HasEHFunclets = false;
+  bool IsPreserveNone = false;
 
   /// Section Type for basic blocks, only relevant with basic block sections.
   BasicBlockSection BBSectionsType = BasicBlockSection::None;
@@ -629,6 +630,10 @@ public:
 
   /// getFunctionNumber - Return a unique ID for the current function.
   unsigned getFunctionNumber() const { return FunctionNumber; }
+
+  void setPreserveNone(bool Val) { IsPreserveNone = Val; }
+
+  bool isPreserveNone() const { return IsPreserveNone; }
 
   /// Returns true if this function has basic block sections enabled.
   bool hasBBSections() const {

@@ -59,10 +59,20 @@ static cl::opt<bool> EnableMachineCombinerPass("x86-machine-combiner",
                                cl::desc("Enable the machine combiner pass"),
                                cl::init(true), cl::Hidden);
 
+cl::opt<std::string> LoadPreserveNoneFilePath(
+    "x86-preserve-none-load", cl::init("-"),
+    cl::desc("Set calling convention of call functions into preserve-none."));
+
+cl::opt<std::string> WritePreserveNoneFilePath(
+    "x86-preserve-none-write", cl::init("-"),
+    cl::desc("Set calling convention of call functions into preserve-none."));
+
 static cl::opt<bool>
     EnableTileRAPass("x86-tile-ra",
                      cl::desc("Enable the tile register allocation pass"),
                      cl::init(true), cl::Hidden);
+
+extern FunctionPass *llvm::createPreserveNonePass();
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeX86Target() {
   // Register the target.
@@ -504,6 +514,9 @@ bool X86PassConfig::addPreISel() {
   const Triple &TT = TM->getTargetTriple();
   if (TT.isOSWindows() && TT.getArch() == Triple::x86)
     addPass(createX86WinEHStatePass());
+
+  addPass(createPreserveNonePass());
+  addPass(createPreserveNoneInfectionPass());
   return true;
 }
 

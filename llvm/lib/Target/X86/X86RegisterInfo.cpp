@@ -421,6 +421,9 @@ X86RegisterInfo::getCallPreservedMask(const MachineFunction &MF,
   bool HasAVX = Subtarget.hasAVX();
   bool HasAVX512 = Subtarget.hasAVX512();
 
+  if (MF.getFunction().hasFnAttribute("no_callee_saved_registers"))
+    return CSR_NoRegs_RegMask;
+
   switch (CC) {
   case CallingConv::GHC:
   case CallingConv::HiPE:
