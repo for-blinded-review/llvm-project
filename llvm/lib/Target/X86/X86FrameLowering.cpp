@@ -33,6 +33,7 @@
 #include "llvm/MC/MCObjectFileInfo.h"
 #include "llvm/MC/MCSymbol.h"
 #include "llvm/Support/Debug.h"
+#include "llvm/Support/CommandLine.h"
 #include "llvm/Target/TargetOptions.h"
 #include <cstdlib>
 
@@ -43,6 +44,10 @@ STATISTIC(NumFrameExtraProbe,
           "Number of extra stack probes generated in prologue");
 
 using namespace llvm;
+
+static cl::opt<bool> X86DisableAlignStackViaPush(
+    "x86-disable-align-stack-via-push", cl::init(true), cl::Hidden,
+    cl::desc("Disable llvm to use push rax to align stack frame."));
 
 X86FrameLowering::X86FrameLowering(const X86Subtarget &STI,
                                    MaybeAlign StackAlignOverride)
@@ -299,7 +304,7 @@ void X86FrameLowering::emitSPUpdate(MachineBasicBlock &MBB,
 
   while (Offset) {
     uint64_t ThisVal = std::min(Offset, Chunk);
-    if (ThisVal == SlotSize) {
+    if (ThisVal == SlotSize && !X86DisableAlignStackViaPush) {
       // Use push / pop for slot sized adjustments as a size optimization. We
       // need to find a dead register when using pop.
       unsigned Reg = isSub
